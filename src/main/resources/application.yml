@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: weather-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    name: isfandiyor
+    password: 2001
+    url: jdbc:postgresql://localhost:5432/weather-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+security:
+  jwt:
+    secret: Secret
+    expiration: 1800000
