@@ -4,7 +4,7 @@ package com.weatherservice.project.mapper;
 import com.weatherservice.project.dto.UserCreateDto;
 import com.weatherservice.project.dto.UserDto;
 import com.weatherservice.project.model.User;
-import com.weatherservice.project.type.UserRole;
+import com.weatherservice.project.type.UserType;
 
 public class UserMapper {
     public static UserDto mapToUserDto(User user) {
@@ -25,7 +25,7 @@ public class UserMapper {
                 .lastname(userCreateDto.getLastname())
                 .age(userCreateDto.getAge())
                 .password(userCreateDto.getPassword())
-                .userRole(UserRole.USER)
+                .userType(UserType.USER)
                 .build();
     }
 }

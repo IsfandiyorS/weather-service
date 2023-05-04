@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_subscriptions_table
+      author: isfandiyor
+      changes:
+        - createTable:
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: bigint
+
+              - column:
+                  name: city_id
+                  type: bigint
+
+              - column:
+                  name: subscribed_at
+                  type: timestamp
+                  defaultValue: now()
+
+              - column:
+                  name: created_by
+                  type: bigint
+
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValue: now()
+
+              - column:
+                  name: last_modified_by
+                  type: bigint
+
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+
+  - changeSet:
+      id: add_foreign_key_constraint_with_user_id
+      author: isfandiyor
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: subscriptions
+            baseTableSchemaName: public
+            constraintName: fk_subscriptions_users
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: CASCADE
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: users
+            referencedTableSchemaName: public
+            validate: true
+
+  - changeSet:
+      id: add_foreign_key_constraint_with_city_id
+      author: isfandiyor
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: city_id
+            baseTableName: subscriptions
+            baseTableSchemaName: public
+            constraintName: fk_subscriptions_cities
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: CASCADE
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: cities
+            referencedTableSchemaName: public
+            validate: true

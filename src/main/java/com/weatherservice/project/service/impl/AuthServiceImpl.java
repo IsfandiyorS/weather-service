@@ -9,10 +9,11 @@ import com.weatherservice.project.exception.FieldMessageException;
 import com.weatherservice.project.mapper.UserMapper;
 import com.weatherservice.project.model.User;
 import com.weatherservice.project.repository.UserRepository;
-import com.weatherservice.project.security.JwtTokenProvider;
 import com.weatherservice.project.service.AuthService;
+import com.weatherservice.project.service.RoleService;
 import com.weatherservice.project.utils.UserValidationUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -26,12 +27,13 @@ import static com.weatherservice.project.common.ResponseMessages.USER_SUCCESSFUL
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final RoleService roleService;
 
     @Override
     public ResponseData<ResultMessage> registerUser(UserCreateDto userCreateDto) {
@@ -59,9 +61,11 @@ public class AuthServiceImpl implements AuthService {
 //        boolean passwordNotMatch = !passwordEncoder.matches(loginDto.getPassword(), user.getPassword());
         UserValidationUtils.checkCondition(passwordNotMatch, new FieldMessageException(PASSWORD, ENTER_VALID_PASSWORD));
 
+
+        log.info("user info {}", user);
         // TODO: 01/05/23 generate jwt token
-        String token = jwtTokenProvider.generateToken(user);
-        return new ResponseData<>(new TokenDto(token));
+//        String token = jwtTokenProvider.generateToken(user);
+        return new ResponseData<>(new TokenDto("token"));
     }
 
     private void validateRequest(UserCreateDto userCreateDto) {

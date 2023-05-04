@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert_row_to_users_table
+      author: isfandiyor
+      changes:
+        - sql:
+            sql:
+              # password: Password1
+              INSERT INTO users(id, firstname, lastname, age, email, password, created_by, user_type, enabled, locked)
+                  VALUES (-1, 'Isfandiyor', 'Sultonov', '21', 'isfandiyorsultonov19@mail.ru', '$2a$10$mPL.f3EDY1Bzxfz0thXZvOTwZQ/TpkXXBMUAAToOxcgOmkyZ6F4wa', -1, 'ADMIN', true, false),
+                         (-2, 'Ashurmatov', 'Lochinbek', '21', 'isfandiyorsultonov18@mail.ru', '$2a$10$mPL.f3EDY1Bzxfz0thXZvOTwZQ/TpkXXBMUAAToOxcgOmkyZ6F4wa', -1, 'ADMIN', true, false),
+                         (-3, 'Otabek', 'Javkochdiyev', '21', 'otabekjavkochdiev@gmail.com', '$2a$10$mPL.f3EDY1Bzxfz0thXZvOTwZQ/TpkXXBMUAAToOxcgOmkyZ6F4wa', -1, 'USER', true, false);

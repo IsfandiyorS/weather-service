@@ -22,7 +22,6 @@ public class UserValidationUtils {
     private static final Pattern DIGIT = Pattern.compile(".*\\d.*");
 
 
-
     public static void validatePassword(String password) {
         if (StringUtils.isEmpty(password)) {
             throw new FieldMessageException(PASSWORD, PASSWORD_EMPTY_VALIDATION);

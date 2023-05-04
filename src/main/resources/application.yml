@@ -11,11 +11,18 @@ spring:
     url: jdbc:postgresql://localhost:5432/weather-service
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yaml
+    drop-first: true
+    enabled: true
+    user: isfandiyor
+    password: 2001
+    url: jdbc:postgresql://localhost:5432/weather-service
 
 security:
   jwt:

@@ -1,0 +1,43 @@
+databaseChangeLog:
+  # Create entity tables
+
+  - include:
+      file: create-schemas/0001-create-roles-table.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: create-schemas/0002-create-users-table.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: create-schemas/0003-create-auth-users-roles-table.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: create-schemas/0004-create-country-table.yml
+      relativeToChangelogFile: true
+
+  - include:
+      file: create-schemas/0005-create-cities-table.yml
+      relativeToChangelogFile: true
+
+  - include:
+      file: create-schemas/0006-create-subscriptions-table.yml
+      relativeToChangelogFile: true
+
+  - include:
+      file: create-schemas/0007-create-weather-table.yml
+      relativeToChangelogFile: true
+
+  #   Insert rows to tables
+  - include:
+      file: insert-table-changelog/0001-insert-entity-users-table.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: insert-table-changelog/0002-insert-entity-roles-table.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: insert-table-changelog/0003-insert-entity-auth-users-roles.yaml
+      relativeToChangelogFile: true

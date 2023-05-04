@@ -1,6 +1,5 @@
 package com.weatherservice.project.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherservice.project.common.ResponseData;
 import com.weatherservice.project.common.ResultMessage;
 import com.weatherservice.project.dto.UserDto;

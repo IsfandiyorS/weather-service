@@ -1,6 +1,6 @@
 package com.weatherservice.project.type;
 
-public enum UserRole {
+public enum UserType {
     USER,
     ADMIN
 }

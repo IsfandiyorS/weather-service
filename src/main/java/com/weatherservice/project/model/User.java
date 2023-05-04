@@ -1,20 +1,10 @@
 package com.weatherservice.project.model;
 
-import com.weatherservice.project.type.UserRole;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.weatherservice.project.type.UserType;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
-import static javax.persistence.GenerationType.IDENTITY;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity(name = "users")
 @Getter
@@ -22,11 +12,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+public class User extends Auditable {
 
     private String firstname;
 
@@ -40,7 +26,7 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserType userType;
 
     @Column(columnDefinition = "boolean default false")
     private boolean enabled;
@@ -48,4 +34,27 @@ public class User {
     @Column(columnDefinition = "boolean default false")
     private boolean locked;
 
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinTable(name = "auth_users_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private Set<Role> roles;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                ", password='" + password + '\'' +
+                ", userType=" + userType +
+                ", enabled=" + enabled +
+                ", locked=" + locked +
+                ", roles=" + roles +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                '}';
+    }
 }
