@@ -2,8 +2,8 @@ package com.weatherservice.project.service;
 
 import com.weatherservice.project.common.ResponseData;
 import com.weatherservice.project.common.ResultMessage;
-import com.weatherservice.project.dto.UserDto;
-import com.weatherservice.project.dto.UserUpdateDto;
+import com.weatherservice.project.dto.auth.UserDto;
+import com.weatherservice.project.dto.auth.UserUpdateDto;
 
 import java.util.List;
 

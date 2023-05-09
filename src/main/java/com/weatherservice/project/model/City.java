@@ -1,8 +1,15 @@
 package com.weatherservice.project.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity(name = "cities")
@@ -16,9 +23,6 @@ public class City extends Auditable {
     private String name;
 
     private String postalCode;
-
-    @Column(columnDefinition = "boolean default false")
-    private boolean visible;
 
     @ManyToOne
     private Country country;

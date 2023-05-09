@@ -5,26 +5,13 @@ spring:
   application:
     name: weather-service
   datasource:
-    driver-class-name: org.postgresql.Driver
     name: isfandiyor
-    password: 2001
-    url: jdbc:postgresql://localhost:5432/weather-service
+    password: isfandiyor_password
+    url: jdbc:mysql://localhost:3306/weather-service
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-  liquibase:
-    change-log: classpath:db/changelog/changelog-master.yaml
-    drop-first: true
-    enabled: true
-    user: isfandiyor
-    password: 2001
-    url: jdbc:postgresql://localhost:5432/weather-service
-
-security:
-  jwt:
-    secret: Secret
-    expiration: 1800000

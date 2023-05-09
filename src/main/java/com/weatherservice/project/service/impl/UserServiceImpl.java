@@ -2,8 +2,8 @@ package com.weatherservice.project.service.impl;
 
 import com.weatherservice.project.common.ResponseData;
 import com.weatherservice.project.common.ResultMessage;
-import com.weatherservice.project.dto.UserDto;
-import com.weatherservice.project.dto.UserUpdateDto;
+import com.weatherservice.project.dto.auth.UserDto;
+import com.weatherservice.project.dto.auth.UserUpdateDto;
 import com.weatherservice.project.exception.ObjectNotFoundException;
 import com.weatherservice.project.mapper.UserMapper;
 import com.weatherservice.project.model.User;
@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import static com.weatherservice.project.common.FieldNames.ID;
 import static com.weatherservice.project.common.ResponseMessages.USER_DELETED;
 import static com.weatherservice.project.common.ResponseMessages.USER_DOES_NOT_EXIST_BY_FIELD;
-import static com.weatherservice.project.mapper.UserMapper.mapToUserDto;
 import static java.lang.String.format;
 
 @Service
@@ -26,33 +25,50 @@ import static java.lang.String.format;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public ResponseData<List<UserDto>> getAllUsers() {
-        List<User> userList = userRepository.findAll();
-
-        var userDtoList = userList.stream()
-                .map(UserMapper::mapToUserDto)
-                .collect(Collectors.toList());
-
-        return new ResponseData<>(userDtoList);
+        return ResponseData.<List<UserDto>>builder()
+                .data(
+                        userRepository.findAll()
+                                .stream()
+                                .map(userMapper::entityToDto)
+                                .collect(Collectors.toList())
+                )
+                .build();
     }
 
     @Override
     public ResponseData<ResultMessage> updateUser(UserUpdateDto userUpdateDto) {
 
-        User user = userRepository.findById(userUpdateDto.getId())
+        return userRepository.findById(userUpdateDto.getId())
+                .map(user -> userMapper.fromUpdateToEntity(userUpdateDto, user))
+                .map(user ->
+                        {
+                            userRepository.save(user);
+                            return ResponseData.<ResultMessage>builder()
+                                    .data(
+                                            ResultMessage.builder()
+                                                    .message("User data successfully updated.")
+                                                    .build()
+                                    )
+                                    .build();
+                        }
+                )
                 .orElseThrow(() -> new ObjectNotFoundException(format(USER_DOES_NOT_EXIST_BY_FIELD, ID)));
-
-        return new ResponseData<>(ResultMessage.builder().message("There is no any logic").build());
-        // TODO: 01/05/23 make some logic use ObjectMapper library
     }
 
     @Override
     public ResponseData<UserDto> getUserById(Long userId) {
-        User user = userRepository.findById(userId)
+        return userRepository.findById(userId)
+                .map(userMapper::entityToDto)
+                .map(user ->
+                        ResponseData.<UserDto>builder()
+                                .data(user)
+                                .build()
+                )
                 .orElseThrow(() -> new ObjectNotFoundException(format(USER_DOES_NOT_EXIST_BY_FIELD, ID)));
-        return new ResponseData<>(mapToUserDto(user));
     }
 
     @Override
@@ -62,11 +78,15 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ObjectNotFoundException(format(USER_DOES_NOT_EXIST_BY_FIELD, ID)));
 
         userRepository.delete(user);
-        var resultMessage = ResultMessage.builder()
-                .message(USER_DELETED)
-                .build();
 
-        return new ResponseData<>(resultMessage);
+        return ResponseData.<ResultMessage>builder()
+                .data(
+                        ResultMessage
+                                .builder()
+                                .message(USER_DELETED)
+                                .build()
+                )
+                .build();
     }
 
 }

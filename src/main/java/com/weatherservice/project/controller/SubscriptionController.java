@@ -2,38 +2,34 @@ package com.weatherservice.project.controller;
 
 import com.weatherservice.project.common.ResponseData;
 import com.weatherservice.project.common.ResultMessage;
-import com.weatherservice.project.dto.auth.UserDto;
-import com.weatherservice.project.dto.auth.UserUpdateDto;
+import com.weatherservice.project.dto.SubscriptionDto;
 import com.weatherservice.project.exception.ProjectIntegrationException;
-import com.weatherservice.project.service.UserService;
+import com.weatherservice.project.service.SubscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/subscribe")
 @RequiredArgsConstructor
-@Tag(name = "User requests")
-public class UserController {
+@Tag(name = "Subscription requests")
+public class SubscriptionController {
 
-    private final UserService userService;
+    private final SubscriptionService subscriptionService;
 
     @Operation(
-            description = "Get all cities endpoint",
-            summary = "This is a get all cities endpoint",
+            description = "Subscribe city endpoint by id",
+            summary = "This is a subscribe city endpoint by its id",
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200"),
                     @ApiResponse(description = "Bad Request", responseCode = "400"),
@@ -41,18 +37,38 @@ public class UserController {
                     @ApiResponse(description = "Not Found", responseCode = "404"),
                     @ApiResponse(description = "Internal Server Error", responseCode = "500")
             },
-            method = "getAllUsers"
+            method = "subscribeCity"
+    )
+    @PostMapping("/{cityId}")
+    public ResponseEntity<ResponseData<ResultMessage>> subscribeCity(@PathVariable("cityId") Long cityId) {
+        return Optional.ofNullable(cityId)
+                .map(subscriptionService::subscribeCity)
+                .map(ResponseEntity::ok)
+                .orElseThrow(ProjectIntegrationException::new);
+    }
+
+    @Operation(
+            description = "Get all subscribed cities endpoint",
+            summary = "This is a get all subscribed cities endpoint",
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200"),
+                    @ApiResponse(description = "Bad Request", responseCode = "400"),
+                    @ApiResponse(description = "Unauthorized / Invalid Token", responseCode = "403"),
+                    @ApiResponse(description = "Not Found", responseCode = "404"),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500")
+            },
+            method = "getAll"
     )
     @GetMapping
-    public ResponseEntity<ResponseData<List<UserDto>>> getAllUsers() {
-        return Optional.of(userService.getAllUsers())
+    public ResponseEntity<ResponseData<List<SubscriptionDto>>> getAll() {
+        return Optional.of(subscriptionService.getAll())
                 .map(ResponseEntity::ok)
                 .orElseThrow(ProjectIntegrationException::new);
     }
 
     @Operation(
-            description = "Update user endpoint",
-            summary = "This is a update user endpoint",
+            description = "Get subscribed city endpoint by user id",
+            summary = "This is a get subscribed city endpoint by user id",
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200"),
                     @ApiResponse(description = "Bad Request", responseCode = "400"),
@@ -60,52 +76,12 @@ public class UserController {
                     @ApiResponse(description = "Not Found", responseCode = "404"),
                     @ApiResponse(description = "Internal Server Error", responseCode = "500")
             },
-            method = "updateUser"
+            method = "subscribeCity"
     )
-    @PutMapping("/update")
-    public ResponseEntity<ResponseData<ResultMessage>> updateUser(@Valid @RequestBody UserUpdateDto userUpdateDto) {
-        return Optional.ofNullable(userUpdateDto)
-                .map(userService::updateUser)
-                .map(ResponseEntity::ok)
-                .orElseThrow(ProjectIntegrationException::new);
-    }
-
-    @Operation(
-            description = "Get user endpoint by id",
-            summary = "This is a get user endpoint by its id",
-            responses = {
-                    @ApiResponse(description = "Success", responseCode = "200"),
-                    @ApiResponse(description = "Bad Request", responseCode = "400"),
-                    @ApiResponse(description = "Unauthorized / Invalid Token", responseCode = "403"),
-                    @ApiResponse(description = "Not Found", responseCode = "404"),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500")
-            },
-            method = "getUserById"
-    )
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseData<UserDto>> getUserById(@PathVariable("id") Long id) {
-        return Optional.ofNullable(id)
-                .map(userService::getUserById)
-                .map(ResponseEntity::ok)
-                .orElseThrow(ProjectIntegrationException::new);
-    }
-
-    @Operation(
-            description = "Delete user endpoint by its id",
-            summary = "This is a delete user endpoint by its id",
-            responses = {
-                    @ApiResponse(description = "Success", responseCode = "200"),
-                    @ApiResponse(description = "Bad Request", responseCode = "400"),
-                    @ApiResponse(description = "Unauthorized / Invalid Token", responseCode = "403"),
-                    @ApiResponse(description = "Not Found", responseCode = "404"),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500")
-            },
-            method = "deleteUserById"
-    )
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseData<ResultMessage>> deleteUserById(@PathVariable("id") Long id) {
-        return Optional.ofNullable(id)
-                .map(userService::deleteUserById)
+    @GetMapping("/{userId}")
+    public ResponseEntity<ResponseData<List<SubscriptionDto>>> getByUserId(@PathVariable("userId") Long userId) {
+        return Optional.ofNullable(userId)
+                .map(subscriptionService::getByUserId)
                 .map(ResponseEntity::ok)
                 .orElseThrow(ProjectIntegrationException::new);
     }

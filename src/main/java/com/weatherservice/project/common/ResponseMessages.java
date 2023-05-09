@@ -31,4 +31,8 @@ public interface ResponseMessages {
     String PASSWORD_RESTORED = "Password successfully restored!";
     String TOKEN_WITH_USER_ID_NOT_FOUND = "ConfirmationToken with this UserId was not found!";
     String USER_SUCCESSFULLY_CREATED = "User account successfully created.";
+    String COUNTRY_SUCCESSFULLY_CREATED = "Country successfully created.";
+    String OBJECT_SUCCESSFULLY_CREATED = "%s successfully created.";
+    String OBJECT_SUCCESSFULLY_UPDATED = "%s successfully updated.";
+    String OBJECT_SUCCESSFULLY_DELETED = "%s successfully deleted.";
 }
