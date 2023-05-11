@@ -1,0 +1,11 @@
+databaseChangeLog:
+  # Create entity tables
+
+  - include:
+      file: create-schemas/0001-create-users-table.yml
+      relativeToChangelogFile: true
+
+  #   Insert rows to tables
+  - include:
+      file: insert-table-changelog/0001-insert-entity-users-table.yml
+      relativeToChangelogFile: true

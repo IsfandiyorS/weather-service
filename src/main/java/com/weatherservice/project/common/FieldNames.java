@@ -4,7 +4,9 @@ public interface FieldNames {
     String EMAIL = "email";
     String ID = "id";
     String PASSWORD = "password";
-    String FIRSTNAME = "firstname";
-    String LASTNAME = "lastname";
-    String AGE = "age";
+    String USER ="User";
+    String WEATHER = "Weather";
+    String CITY ="City";
+    String COUNTRY = "Country";
+    String SUBSCRIPTION = "Subscription";
 }

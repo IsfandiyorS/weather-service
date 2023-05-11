@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +45,7 @@ public class UserController {
             method = "getAllUsers"
     )
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<List<UserDto>>> getAllUsers() {
         return Optional.of(userService.getAllUsers())
                 .map(ResponseEntity::ok)
@@ -63,6 +65,7 @@ public class UserController {
             method = "updateUser"
     )
     @PutMapping("/update")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<ResponseData<ResultMessage>> updateUser(@Valid @RequestBody UserUpdateDto userUpdateDto) {
         return Optional.ofNullable(userUpdateDto)
                 .map(userService::updateUser)
@@ -83,6 +86,7 @@ public class UserController {
             method = "getUserById"
     )
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<UserDto>> getUserById(@PathVariable("id") Long id) {
         return Optional.ofNullable(id)
                 .map(userService::getUserById)
@@ -103,6 +107,7 @@ public class UserController {
             method = "deleteUserById"
     )
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> deleteUserById(@PathVariable("id") Long id) {
         return Optional.ofNullable(id)
                 .map(userService::deleteUserById)

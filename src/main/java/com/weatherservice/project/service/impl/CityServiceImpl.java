@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.weatherservice.project.common.FieldNames.CITY;
+import static com.weatherservice.project.common.FieldNames.COUNTRY;
 import static com.weatherservice.project.common.FieldNames.ID;
 import static com.weatherservice.project.common.ResponseMessages.OBJECT_NOT_FOUND_BY_FIELD;
 import static com.weatherservice.project.common.ResponseMessages.OBJECT_SUCCESSFULLY_CREATED;
@@ -36,7 +38,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public ResponseData<ResultMessage> createCity(CityCreateDto cityCreateDto) {
         Country county = countryRepository.findById(cityCreateDto.getCountryId())
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "Country", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, COUNTRY, ID)));
         return Optional.of(cityCreateDto)
                 .map(cityDto -> {
                     City city = cityMapper.fromCreateDtoToEntity(cityDto);
@@ -48,7 +50,7 @@ public class CityServiceImpl implements CityService {
                         ResponseData.<ResultMessage>builder()
                                 .data(
                                         ResultMessage.builder()
-                                                .message(format(OBJECT_SUCCESSFULLY_CREATED, "City"))
+                                                .message(format(OBJECT_SUCCESSFULLY_CREATED, CITY))
                                                 .build()
                                 )
                                 .build()
@@ -58,7 +60,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public ResponseData<ResultMessage> updateCity(CityUpdateDto cityUpdateDto) {
         Country county = countryRepository.findById(cityUpdateDto.getCountryId())
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "Country", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, COUNTRY, ID)));
 
         return cityRepository.findById(cityUpdateDto.getId())
                 .map(city -> {
@@ -75,7 +77,7 @@ public class CityServiceImpl implements CityService {
                         )
                         .build()
                 )
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "City", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, CITY, ID)));
     }
 
     @Override
@@ -86,7 +88,7 @@ public class CityServiceImpl implements CityService {
                         .data(cityDto)
                         .build()
                 )
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "City", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, CITY, ID)));
     }
 
     @Override
@@ -104,13 +106,13 @@ public class CityServiceImpl implements CityService {
     @Override
     public ResponseData<ResultMessage> deleteById(Long cityId) {
         City city = cityRepository.findById(cityId)
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "City", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, CITY, ID)));
 
         cityRepository.delete(city);
         return ResponseData.<ResultMessage>builder()
                 .data(
                         ResultMessage.builder()
-                                .message(format(OBJECT_SUCCESSFULLY_DELETED, "City", ID))
+                                .message(format(OBJECT_SUCCESSFULLY_DELETED, CITY, ID))
                                 .build()
                 )
                 .build();

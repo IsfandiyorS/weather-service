@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,7 @@ public class CountryController {
             method = "getById"
     )
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<ResponseData<CountryDto>> getById(@PathVariable("id") Long countryId) {
         return Optional.ofNullable(countryId)
                 .map(countryService::getById)
@@ -65,6 +67,7 @@ public class CountryController {
             method = "getAll"
     )
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<ResponseData<List<CountryDto>>> getAll() {
         return Optional.of(countryService.getAll())
                 .map(ResponseEntity::ok)
@@ -84,6 +87,7 @@ public class CountryController {
             method = "createCountry"
     )
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> createCountry(@Valid @RequestBody CountryCreateDto countryUpdateDto) {
         return Optional.ofNullable(countryUpdateDto)
                 .map(countryService::createCountry)
@@ -104,6 +108,7 @@ public class CountryController {
             method = "updateCountry"
     )
     @PutMapping("/update")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> updateCountry(@Valid @RequestBody CountryUpdateDto countryUpdateDto) {
         return Optional.ofNullable(countryUpdateDto)
                 .map(countryService::updateCountry)
@@ -124,6 +129,7 @@ public class CountryController {
             method = "deleteCountryById"
     )
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> deleteCountryById(@PathVariable("id") Long countryId) {
         return Optional.ofNullable(countryId)
                 .map(countryService::deleteById)

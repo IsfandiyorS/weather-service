@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,14 +22,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/weather")
 @RequiredArgsConstructor
-@Tag(name = "Weather control requests")
+@Tag(name = "Weather requests")
 public class WeatherController {
 
     private final WeatherService weatherService;
@@ -46,6 +47,7 @@ public class WeatherController {
             method = "getById"
     )
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<WeatherDto>> getById(@PathVariable("id") Long weatherId) {
         return Optional.ofNullable(weatherId)
                 .map(weatherService::getById)
@@ -66,6 +68,7 @@ public class WeatherController {
             method = "getSubscribedCityWeathers"
     )
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<ResponseData<List<WeatherDto>>> getSubscribedCityWeathers() {
         return Optional.of(weatherService.getSubscribedCityWeathers())
                 .map(ResponseEntity::ok)
@@ -85,6 +88,7 @@ public class WeatherController {
             method = "createWeather"
     )
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> createWeather(@Valid @RequestBody WeatherCreateDto weatherCreateDto) {
         return Optional.ofNullable(weatherCreateDto)
                 .map(weatherService::createWeather)
@@ -105,6 +109,7 @@ public class WeatherController {
             method = "updateWeather"
     )
     @PutMapping("/update")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> updateWeather(@Valid @RequestBody WeatherUpdateDto weatherUpdateDto) {
         return Optional.ofNullable(weatherUpdateDto)
                 .map(weatherService::updateWeather)
@@ -125,6 +130,7 @@ public class WeatherController {
             method = "deleteWeather"
     )
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> deleteWeather(@PathVariable("id") Long weatherId) {
         return Optional.ofNullable(weatherId)
                 .map(weatherService::deleteById)

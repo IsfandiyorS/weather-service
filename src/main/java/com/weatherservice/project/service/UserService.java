@@ -17,8 +17,4 @@ public interface UserService {
 
     ResponseData<ResultMessage> deleteUserById(final Long userId);
 
-    // TODO: 01/05/23 create find by username method
-
-    // TODO: 01/05/23 get all users subscribes
-
 }

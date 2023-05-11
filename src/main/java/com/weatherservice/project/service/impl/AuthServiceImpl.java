@@ -9,13 +9,14 @@ import com.weatherservice.project.exception.FieldMessageException;
 import com.weatherservice.project.mapper.UserMapper;
 import com.weatherservice.project.model.User;
 import com.weatherservice.project.repository.UserRepository;
+import com.weatherservice.project.security.JwtTokenProvider;
 import com.weatherservice.project.service.AuthService;
 import com.weatherservice.project.utils.UserValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static com.weatherservice.project.common.FieldNames.EMAIL;
@@ -34,8 +35,9 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final RoleService roleService;
     private final UserMapper userMapper;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ResponseData<ResultMessage> registerUser(UserCreateDto userCreateDto) {
@@ -53,13 +55,6 @@ public class AuthServiceImpl implements AuthService {
                                 )
                                 .build()
                 ).get();
-
-//        User user = UserMapper.mapToEntity(userCreateDto);
-//        userRepository.save(user);
-//        var resultMessage = ResultMessage.builder()
-//                .message(USER_SUCCESSFULLY_CREATED)
-//                .build();
-//        return new ResponseData<>(resultMessage);
     }
 
     @Override
@@ -70,13 +65,11 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new FieldMessageException(EMAIL, format(USER_DOES_NOT_EXIST_BY_FIELD, EMAIL), NOT_FOUND));
 
-        boolean passwordNotMatch = !Objects.equals(loginDto.getPassword(), user.getPassword());
-//        boolean passwordNotMatch = !passwordEncoder.matches(loginDto.getPassword(), user.getPassword());
+        boolean passwordNotMatch = !passwordEncoder.matches(loginDto.getPassword(), user.getPassword());
         UserValidationUtils.checkCondition(passwordNotMatch, new FieldMessageException(PASSWORD, ENTER_VALID_PASSWORD));
 
-        // TODO: 01/05/23 generate jwt token
-//        String token = jwtTokenProvider.generateToken(user);
-        return new ResponseData<>(new TokenDto("token"));
+        String token = jwtTokenProvider.generateToken(user);
+        return new ResponseData<>(new TokenDto(token));
     }
 
     private void validateRequest(UserCreateDto userCreateDto) {

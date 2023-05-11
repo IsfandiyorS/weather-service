@@ -15,3 +15,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yml
+    drop-first: false
+    enabled: false
+
+springdoc:
+  swagger-ui:
+    enabled: true

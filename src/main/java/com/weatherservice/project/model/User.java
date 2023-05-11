@@ -1,22 +1,16 @@
 package com.weatherservice.project.model;
 
 import com.weatherservice.project.type.UserType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import java.util.Set;
 
 @Entity(name = "users")
 @Getter
@@ -46,12 +40,6 @@ public class User extends Auditable {
     @Column(columnDefinition = "boolean default false")
     private boolean locked;
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinTable(name = "auth_users_roles",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private Set<Role> roles;
-
     @Override
     public String toString() {
         return "User{" +
@@ -64,7 +52,6 @@ public class User extends Auditable {
                 ", userType=" + userType +
                 ", enabled=" + enabled +
                 ", locked=" + locked +
-                ", roles=" + roles +
                 ", createdDate=" + createdDate +
                 ", lastModifiedDate=" + lastModifiedDate +
                 '}';

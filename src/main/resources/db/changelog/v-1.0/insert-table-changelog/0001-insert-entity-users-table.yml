@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: insertRowToUsersTable
+      author: isfandiyor
+      changes:
+        - sql:
+            sql:
+              # password: Password1
+              INSERT INTO users(id, firstname, lastname, email, password, user_type)
+              VALUES  (-1, 'isfandiyor', 'sultonov', 'isfandiyorsultonov19@mail.ru', '$2a$10$mPL.f3EDY1Bzxfz0thXZvOTwZQ/TpkXXBMUAAToOxcgOmkyZ6F4wa', 'ADMIN'),
+                      (-2, 'lochinbek', 'ashurmatov', 'sultonovisfandiyor0@gmail.com', '$2a$10$mPL.f3EDY1Bzxfz0thXZvOTwZQ/TpkXXBMUAAToOxcgOmkyZ6F4wa', 'USER');

@@ -12,6 +12,7 @@ import com.weatherservice.project.model.User;
 import com.weatherservice.project.repository.CityRepository;
 import com.weatherservice.project.repository.SubscriptionRepository;
 import com.weatherservice.project.repository.UserRepository;
+import com.weatherservice.project.security.SecurityUtil;
 import com.weatherservice.project.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.weatherservice.project.common.FieldNames.CITY;
 import static com.weatherservice.project.common.FieldNames.ID;
+import static com.weatherservice.project.common.FieldNames.SUBSCRIPTION;
+import static com.weatherservice.project.common.FieldNames.USER;
 import static com.weatherservice.project.common.ResponseMessages.OBJECT_NOT_FOUND_BY_FIELD;
 import static com.weatherservice.project.common.ResponseMessages.OBJECT_SUCCESSFULLY_CREATED;
 import static java.lang.String.format;
@@ -36,14 +40,15 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public ResponseData<ResultMessage> subscribeCity(Long cityId) {
-        // TODO: 05/05/23 get user id from securityUtil it means i have to get user id from it
 
-        Optional<User> user = userRepository.findById(-1L);
+        Long currentUserId = SecurityUtil.getCurrentUser().get().getId();
+
+        Optional<User> user = userRepository.findById(currentUserId);
 
         City city = cityRepository.findById(cityId)
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "City", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, CITY, ID)));
 
-        if (subscriptionRepository.findByUserIdAndCityId(-1L, city.getId()).isPresent()){
+        if (subscriptionRepository.findByUserIdAndCityId(currentUserId, city.getId()).isPresent()){
                 throw  new BadRequestException("You already subscribed to this city.");
         }
 
@@ -53,7 +58,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .data(
                         ResultMessage
                                 .builder()
-                                .message(format(OBJECT_SUCCESSFULLY_CREATED, "Subscription"))
+                                .message(format(OBJECT_SUCCESSFULLY_CREATED, SUBSCRIPTION))
                                 .build())
                 .build();
     }
@@ -73,9 +78,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public ResponseData<List<SubscriptionDto>> getByUserId(Long userId) {
 
-        // TODO: 06/05/23 exception check from postman
         userRepository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "User", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, USER, ID)));
 
         return ResponseData.<List<SubscriptionDto>>builder()
                 .data(

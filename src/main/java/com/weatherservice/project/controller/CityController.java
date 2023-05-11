@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,7 @@ public class CityController {
             method = "getById"
     )
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<ResponseData<CityDto>> getById(@PathVariable("id") Long cityId) {
         return Optional.ofNullable(cityId)
                 .map(cityService::getById)
@@ -66,6 +68,7 @@ public class CityController {
             method = "getAll"
     )
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<ResponseData<List<CityDto>>> getAll() {
         return Optional.of(cityService.getAll())
                 .map(ResponseEntity::ok)
@@ -85,6 +88,7 @@ public class CityController {
             method = "createCity"
     )
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> createCity(@Valid @RequestBody CityCreateDto cityCreateDto) {
         return Optional.ofNullable(cityCreateDto)
                 .map(cityService::createCity)
@@ -105,6 +109,7 @@ public class CityController {
             method = "updateCity"
     )
     @PutMapping("/update")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> updateCity(@Valid @RequestBody CityUpdateDto cityUpdateDto) {
         return Optional.ofNullable(cityUpdateDto)
                 .map(cityService::updateCity)
@@ -125,6 +130,7 @@ public class CityController {
             method = "deleteCityById"
     )
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> deleteCityById(@PathVariable("id") Long cityId) {
         return Optional.ofNullable(cityId)
                 .map(cityService::deleteById)

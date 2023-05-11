@@ -7,9 +7,10 @@ import com.weatherservice.project.exception.CommonResponseException;
 import com.weatherservice.project.exception.FieldMessageException;
 import com.weatherservice.project.exception.FieldValidationException;
 import com.weatherservice.project.exception.ObjectNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,10 +33,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
-                                                                  HttpStatus status,
+                                                                  HttpStatusCode status,
                                                                   WebRequest request) {
         var validationErrors = ex.getBindingResult()
                 .getAllErrors()
@@ -54,6 +55,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ResponseData<>(FIELD_VALIDATION_ERROR_MESSAGE, validationErrors));
     }
 
+
+
     @ExceptionHandler(FieldValidationException.class)
     public ResponseEntity<ResponseData<?>> handleFieldValidationException(final FieldValidationException ex) {
         FieldErrorMessage fieldValidationError = new FieldErrorMessage(ex.getField(), ex.getMessage());
@@ -69,7 +72,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<?> handleAccessDeniedException(final AccessDeniedException ex) {
+    public ResponseEntity<?> handleAccessDeniedException(final AccessDeniedException ex,
+                                                         final WebRequest request) {
+        // TODO: 11/05/23 AccessDeniedException is not catched by here there is a problem with catching
         return ResponseEntity.status(FORBIDDEN).body(new ResponseData<>(null, USER_HAS_NOT_ACCESS));
     }
 

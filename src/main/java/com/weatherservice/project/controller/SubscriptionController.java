@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +41,7 @@ public class SubscriptionController {
             method = "subscribeCity"
     )
     @PostMapping("/{cityId}")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<ResponseData<ResultMessage>> subscribeCity(@PathVariable("cityId") Long cityId) {
         return Optional.ofNullable(cityId)
                 .map(subscriptionService::subscribeCity)
@@ -60,6 +62,7 @@ public class SubscriptionController {
             method = "getAll"
     )
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<List<SubscriptionDto>>> getAll() {
         return Optional.of(subscriptionService.getAll())
                 .map(ResponseEntity::ok)
@@ -79,6 +82,7 @@ public class SubscriptionController {
             method = "subscribeCity"
     )
     @GetMapping("/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseData<List<SubscriptionDto>>> getByUserId(@PathVariable("userId") Long userId) {
         return Optional.ofNullable(userId)
                 .map(subscriptionService::getByUserId)

@@ -7,9 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import static com.weatherservice.project.common.ResponseMessages.EMAIL_PATTERN_VALIDATION;
 import static com.weatherservice.project.common.ResponseMessages.USER_FIRSTNAME_EMPTY_VALIDATION;

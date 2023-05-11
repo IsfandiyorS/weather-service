@@ -6,6 +6,8 @@ import com.weatherservice.project.dto.auth.UserDto;
 import com.weatherservice.project.dto.auth.UserUpdateDto;
 import com.weatherservice.project.model.User;
 import com.weatherservice.project.type.UserType;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -13,8 +15,10 @@ import java.time.LocalDateTime;
 import static com.weatherservice.project.utils.GenericValidationUtil.isFieldEmpty;
 
 @Component
+@RequiredArgsConstructor
 public class UserMapper implements BaseMapper<UserCreateDto, UserUpdateDto, UserDto, User> {
 
+    private final PasswordEncoder passwordEncoder;
     @Override
     public User fromCreateDtoToEntity(UserCreateDto userCreateDto) {
         return User.builder()
@@ -22,7 +26,7 @@ public class UserMapper implements BaseMapper<UserCreateDto, UserUpdateDto, User
                 .firstname(userCreateDto.getFirstname())
                 .lastname(userCreateDto.getLastname())
                 .age(userCreateDto.getAge())
-                .password(userCreateDto.getPassword())
+                .password(passwordEncoder.encode(userCreateDto.getPassword()))
                 .userType(UserType.USER)
                 .build();
     }

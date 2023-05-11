@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.weatherservice.project.common.FieldNames.COUNTRY;
 import static com.weatherservice.project.common.FieldNames.ID;
 import static com.weatherservice.project.common.ResponseMessages.COUNTRY_SUCCESSFULLY_CREATED;
 import static com.weatherservice.project.common.ResponseMessages.OBJECT_NOT_FOUND_BY_FIELD;
@@ -56,11 +57,11 @@ public class CountryServiceImpl implements CountryService {
                 .map(country -> ResponseData.<ResultMessage>builder()
                         .data(
                                 ResultMessage.builder()
-                                        .message(format(OBJECT_SUCCESSFULLY_UPDATED, "Country"))
+                                        .message(format(OBJECT_SUCCESSFULLY_UPDATED, COUNTRY))
                                         .build()
                         )
                         .build())
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "Country", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, COUNTRY, ID)));
     }
 
     @Override
@@ -70,7 +71,7 @@ public class CountryServiceImpl implements CountryService {
                 .map(countryDto -> ResponseData.<CountryDto>builder()
                         .data(countryDto)
                         .build())
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "Country", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, COUNTRY, ID)));
     }
 
     @Override
@@ -89,13 +90,13 @@ public class CountryServiceImpl implements CountryService {
     public ResponseData<ResultMessage> deleteById(Long countryId) {
 
         Country country = countryRepository.findById(countryId)
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "Country", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, COUNTRY, ID)));
 
         countryRepository.delete(country);
         return ResponseData.<ResultMessage>builder()
                 .data(
                         ResultMessage.builder()
-                                .message(format(OBJECT_SUCCESSFULLY_DELETED, "Country", ID))
+                                .message(format(OBJECT_SUCCESSFULLY_DELETED, COUNTRY, ID))
                                 .build()
                 )
                 .build();

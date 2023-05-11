@@ -11,6 +11,7 @@ import com.weatherservice.project.model.City;
 import com.weatherservice.project.model.Weather;
 import com.weatherservice.project.repository.CityRepository;
 import com.weatherservice.project.repository.WeatherRepository;
+import com.weatherservice.project.security.SecurityUtil;
 import com.weatherservice.project.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.weatherservice.project.common.FieldNames.CITY;
 import static com.weatherservice.project.common.FieldNames.ID;
+import static com.weatherservice.project.common.FieldNames.WEATHER;
 import static com.weatherservice.project.common.ResponseMessages.OBJECT_NOT_FOUND_BY_FIELD;
 import static com.weatherservice.project.common.ResponseMessages.OBJECT_SUCCESSFULLY_CREATED;
 import static com.weatherservice.project.common.ResponseMessages.OBJECT_SUCCESSFULLY_UPDATED;
@@ -37,7 +40,7 @@ public class WeatherServiceImpl implements WeatherService {
     public ResponseData<ResultMessage> createWeather(WeatherCreateDto weatherCreateDto) {
 
         City city = cityRepository.findById(weatherCreateDto.getCityId())
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "City", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, CITY, ID)));
 
         return Optional.of(weatherMapper.fromCreateDtoToEntity(weatherCreateDto))
                 .map(weather -> {
@@ -49,7 +52,7 @@ public class WeatherServiceImpl implements WeatherService {
                         ResponseData.<ResultMessage>builder()
                                 .data(
                                         ResultMessage.builder()
-                                                .message(format(OBJECT_SUCCESSFULLY_CREATED, "Weather"))
+                                                .message(format(OBJECT_SUCCESSFULLY_CREATED, WEATHER))
                                                 .build()
                                 )
                                 .build()
@@ -65,12 +68,12 @@ public class WeatherServiceImpl implements WeatherService {
                         ResponseData.<ResultMessage>builder()
                                 .data(
                                         ResultMessage.builder()
-                                                .message(format(OBJECT_SUCCESSFULLY_UPDATED, "Weather"))
+                                                .message(format(OBJECT_SUCCESSFULLY_UPDATED, WEATHER))
                                                 .build()
                                 )
                                 .build()
                 )
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "Weather", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, WEATHER, ID)));
     }
 
     @Override
@@ -82,13 +85,13 @@ public class WeatherServiceImpl implements WeatherService {
                                 .data(weatherDto)
                                 .build()
                 )
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "Weather", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, WEATHER, ID)));
     }
 
     @Override
     public ResponseData<List<WeatherDto>> getSubscribedCityWeathers() {
-        // TODO: 06/05/23 get user by Context holder until getting from it i am using -1L as user id
-        List<WeatherDto> weatherDtoList = weatherRepository.findWeatherByUserSubscriptions(1L)
+        Long currentUserId = SecurityUtil.getCurrentUser().get().getId();
+        List<WeatherDto> weatherDtoList = weatherRepository.findWeatherByUserSubscriptions(currentUserId)
                 .stream()
                 .map(weatherMapper::entityToDto)
                 .collect(Collectors.toList());
@@ -99,7 +102,7 @@ public class WeatherServiceImpl implements WeatherService {
     public ResponseData<ResultMessage> deleteById(Long weatherId) {
 
         Weather weather = weatherRepository.findById(weatherId)
-                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, "Weather", ID)));
+                .orElseThrow(() -> new ObjectNotFoundException(format(OBJECT_NOT_FOUND_BY_FIELD, WEATHER, ID)));
         weatherRepository.delete(weather);
         return ResponseData.<ResultMessage>builder()
                 .data(

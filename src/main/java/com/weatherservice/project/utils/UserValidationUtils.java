@@ -46,8 +46,6 @@ public class UserValidationUtils {
         }
     }
 
-    // TODO: 01/05/23 validate user age
-
     public static void checkCondition(boolean isFail, String message) {
         checkCondition(isFail, new BadRequestException(message));
     }
